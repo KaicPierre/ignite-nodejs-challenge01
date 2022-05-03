@@ -68,13 +68,17 @@ app.put("/todos/:id", checksExistsUserAccount, (request, response) => {
 
     const todoIndex = user.todos.indexOf(todo);
 
-    if (request.title) todo.title = request.title;
-    if (request.deadline) todo.deadline = new Date(request.title);
+    if (request.body.title) todo.title = request.body.title;
+    if (request.body.deadline) todo.deadline = new Date(request.body.deadline);
+
+    console.log(todo)
 
     user.todos[todoIndex] = todo;
 
     return response.status(201).send()
-  } catch (error) {}
+  } catch (error) {
+    return response.status(400).json()
+  }
 });
 
 app.patch("/todos/:id/done", checksExistsUserAccount, (request, response) => {
