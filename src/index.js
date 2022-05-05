@@ -64,29 +64,52 @@ app.put("/todos/:id", checksExistsUserAccount, (request, response) => {
   try {
     const todo = user.todos.find((todo) => todo.id === id);
 
-    if(!todo) return response.status(400).json({error: "Task not found!"})
+    if (!todo) return response.status(400).json({ error: "Task not found!" });
 
     const todoIndex = user.todos.indexOf(todo);
 
     if (request.body.title) todo.title = request.body.title;
     if (request.body.deadline) todo.deadline = new Date(request.body.deadline);
 
-    console.log(todo)
-
     user.todos[todoIndex] = todo;
 
-    return response.status(201).send()
+    return response.status(201).send();
   } catch (error) {
-    return response.status(400).json()
+    return response.status(400).json();
   }
 });
 
 app.patch("/todos/:id/done", checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { id } = request.params;
+  const { user } = request;
+  try {
+    const todo = user.todos.find((todo) => todo.id === id);
+
+    if (!todo) return response.status(400).json({ error: "Task not found!" });
+    const todoIndex = user.todos.indexOf(todo);
+
+    todo.done = true;
+    user.todos[todoIndex] = todo;
+    return response.status(201).send();
+  } catch (error) {
+    response.status(400).json(error);
+  }
 });
 
 app.delete("/todos/:id", checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { id } = request.params;
+  const { user } = request;
+  try {
+    const todo = user.todos.find((todo) => todo.id === id);
+
+    if (!todo) return response.status(400).json({ error: "Task not found!" });
+    
+    const todoIndex = user.todos.indexOf(todo);
+    user.todos.splice(todoIndex, 1);
+    return response.status(204).send();
+  } catch (error) {
+    response.status(400).json(error);
+  }
 });
 
 module.exports = app;
